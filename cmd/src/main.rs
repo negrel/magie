@@ -1,7 +1,7 @@
 use std::env;
 use std::fs::File;
 
-use libmagei::codec::bitmap;
+use libmagie::codec::bitmap;
 
 fn main() {
     println!("{}", env::current_dir().unwrap().display());
