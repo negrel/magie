@@ -3,6 +3,9 @@ name = "libmagie"
 version = "0.1.0"
 authors = ["Alexandre Negrel <negrel.dev@protonmail.com>"]
 edition = "2018"
+license-file = "LICENSE"
+description = "A magical library for processing images."
+keywords = ["image", "jpeg", "jfif", "png", "wepb"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
