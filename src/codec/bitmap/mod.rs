@@ -133,3 +133,63 @@ impl BitmapHeader {
         self.pixel_offset
     }
 }
+
+mod bitmap_header_tests {
+    use super::*;
+
+    #[test]
+    fn test_bitmap_header() {
+        const HEADER: [u8; HEADER_SIZE] = [
+            // Signature bytes
+            ('B' as u8),
+            ('M' as u8),
+            // File size
+            0xF0,
+            0xE0,
+            0xD0,
+            0xE0,
+            // Reserved bytes
+            0,
+            0,
+            0,
+            0,
+            // Pixel array offset
+            0xF0,
+            0xA0,
+            0xB0,
+            0xC0,
+        ];
+
+        let header = BitmapHeader::new(HEADER).unwrap();
+        assert_eq!(header.get_type(), BitmapType::BM);
+        assert_eq!(header.get_size(), 0xE0_D0_E0_F0);
+        assert_eq!(header.get_pixel_offset(), 0xC0_B0_A0_F0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bitmap_header_invalid_type() {
+        const HEADER: [u8; HEADER_SIZE] = [
+            // Signature bytes
+            ('Z' as u8),
+            ('Z' as u8),
+            // File size
+            0xF,
+            0xE,
+            0xD,
+            0xE,
+            // Reserved bytes
+            0,
+            0,
+            0,
+            0,
+            // Pixel array offset
+            0xF,
+            0xA,
+            0xB,
+            0xC,
+        ];
+
+        let _header = BitmapHeader::new(HEADER).unwrap();
+    }
+}
