@@ -78,6 +78,7 @@ impl TryFrom<(u8, u8)> for BitmapType {
 pub struct BitmapHeader {
     _type: BitmapType,
     size: u32,
+    pixel_offset: u32,
 }
 
 const HEADER_SIZE: usize = 14;
@@ -85,19 +86,35 @@ const HEADER_SIZE: usize = 14;
 impl BitmapHeader {
     fn new(header: [u8; HEADER_SIZE]) -> Result<BitmapHeader, BitmapTypeError> {
         let _type = BitmapType::try_from((header[0], header[1]))?;
-        let size = BitmapHeader::extract_size(&header[2..6]);
+        let size = BitmapHeader::extract_size(&header);
+        let pixel_offset = BitmapHeader::extract_pixel_offset(&header);
 
         Ok(BitmapHeader {
             _type: BitmapType::BM,
             size,
+            pixel_offset,
         })
     }
 
     fn extract_size(header: &[u8]) -> u32 {
-        let size = (header[3] as u32) << 24;
-        let size = size + (header[2] as u32) << 16;
-        let size = size + (header[1] as u32) << 8;
+        const OFFSET: usize = 0x0002;
 
-        size + (header[0] as u32)
+        let mut size = 0;
+        for i in 0..4 {
+            size += (header[OFFSET + i] as u32) << 8 * i;
+        }
+
+        size
+    }
+
+    fn extract_pixel_offset(header: &[u8]) -> u32 {
+        const OFFSET: usize = 0x000A;
+
+        let mut data_offset = 0;
+        for i in 0..4 {
+            data_offset += (header[OFFSET + i] as u32) << 8 * i;
+        }
+
+        data_offset
     }
 }
