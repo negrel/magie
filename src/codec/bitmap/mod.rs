@@ -117,4 +117,19 @@ impl BitmapHeader {
 
         data_offset
     }
+
+    #[inline]
+    pub fn get_type(&self) -> BitmapType {
+        self._type
+    }
+
+    #[inline]
+    pub fn get_size(&self) -> u32 {
+        self.size
+    }
+
+    #[inline]
+    pub fn get_pixel_offset(&self) -> u32 {
+        self.pixel_offset
+    }
 }
