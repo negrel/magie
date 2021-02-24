@@ -1,4 +1,4 @@
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use std::fmt::Error;
 use std::result::Result;
 
@@ -98,24 +98,16 @@ impl BitmapHeader {
 
     fn extract_size(header: &[u8]) -> u32 {
         const OFFSET: usize = 0x0002;
+        let mut result = &header[OFFSET..OFFSET + 4];
 
-        let mut size = 0;
-        for i in 0..4 {
-            size += (header[OFFSET + i] as u32) << 8 * i;
-        }
-
-        size
+        u32::from_le_bytes(result.try_into().expect("slice should have a length of 4"))
     }
 
     fn extract_pixel_offset(header: &[u8]) -> u32 {
         const OFFSET: usize = 0x000A;
+        let mut result = &header[OFFSET..OFFSET + 4];
 
-        let mut data_offset = 0;
-        for i in 0..4 {
-            data_offset += (header[OFFSET + i] as u32) << 8 * i;
-        }
-
-        data_offset
+        u32::from_le_bytes(result.try_into().expect("slice should have a length of 4"))
     }
 
     #[inline]
@@ -191,5 +183,13 @@ mod bitmap_header_tests {
         ];
 
         let _header = BitmapHeader::new(HEADER).unwrap();
+    }
+}
+
+pub struct DIBHeader {}
+
+impl DIBHeader {
+    fn new() -> Self {
+        DIBHeader {}
     }
 }
