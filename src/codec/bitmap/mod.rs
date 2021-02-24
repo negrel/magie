@@ -38,7 +38,7 @@ quick_error! {
     }
 }
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(u16)]
 pub enum BitmapType {
     BM = (('B' as u16) << 8) + 'M' as u16,
